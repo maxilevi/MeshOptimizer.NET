@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mesh.cs" />
-    <Compile Include="Optimizer.cs" />
+    <Compile Include="MeshOperations.cs" />
     <Compile Include="MeshOptimizerNative.cs" />
     <Compile Include="Pointer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
