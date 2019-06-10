@@ -1,9 +1,9 @@
 # MeshOptimizer.NET
-a .NET idiomatic wrapper around [zeux/meshoptimizer](https://github.com/zeux/meshoptimize)
+a .NET idiomatic wrapper around [zeux/meshoptimizer](https://github.com/zeux/meshoptimizer)
 
 ## Dependencies
 
-Since it's just a P/Invoke wrapper MeshOptimizer.NET expects to find the [meshoptimizer](https://github.com/zeux/meshoptimize) .dll (named as "meshoptimizer32.dll") in the same directory or in the PATH
+MeshOptimizer.NET expects to find the [meshoptimizer](https://github.com/zeux/meshoptimizer) compiled binary (named as `"meshoptimizer32.dll"`) in the same directory or in the PATH
 
 ## Pipeline
 
