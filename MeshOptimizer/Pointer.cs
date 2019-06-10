@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MeshOptimizer
 {
-    public class Pointer
+    internal class Pointer
     {
         private GCHandle _handle;
         public IntPtr Address { get; private set; }

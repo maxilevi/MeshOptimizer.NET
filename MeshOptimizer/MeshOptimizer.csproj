@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mesh.cs" />
     <Compile Include="MeshOperations.cs" />
     <Compile Include="MeshOptimizerNative.cs" />
     <Compile Include="Pointer.cs" />

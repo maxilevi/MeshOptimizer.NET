@@ -24,21 +24,20 @@ namespace MeshOptimizerTests
                 new Vertex(0, 1, 0),
                 new Vertex(1, 0, 0)
             };
-            var mesh = new Mesh<Vertex>(vertices, null, Vertex.SizeInBytes, Vertex.Stride);
-            MeshOperations.Optimize(mesh);
+            var result = MeshOperations.Optimize(vertices, null, Vertex.SizeInBytes);
             Assert.AreEqual(new Vertex[3]
             {
                 new Vertex(1, 0, 0),
                 new Vertex(0, 1, 0),
                 new Vertex(0, 0, 1),
-            }, mesh.Vertices);
+            }, result.Item1);
             Assert.AreEqual(new uint[12]
             {
                 0,1,2,
                 2,1,0,
                 0,1,2,
                 2,1,0
-            }, mesh.Indices);
+            }, result.Item2);
         }
 
         [Test]
@@ -60,21 +59,20 @@ namespace MeshOptimizerTests
                 5, 4, 3,
                 3, 4, 5
             };
-            var mesh = new Mesh<Vertex>(vertices, indices, Vertex.SizeInBytes, Vertex.Stride);
-            MeshOperations.Optimize(mesh);
+            var result = MeshOperations.Optimize(vertices, indices, Vertex.SizeInBytes);
             Assert.AreEqual(new Vertex[3]
             {
                 new Vertex(1, 0, 0),
                 new Vertex(0, 1, 0),
                 new Vertex(0, 0, 1),
-            }, mesh.Vertices);
+            }, result.Item1);
             Assert.AreEqual(new uint[12]
             {
                 0,1,2,
                 2,1,0,
                 0,1,2,
                 2,1,0
-            }, mesh.Indices);
+            }, result.Item2);
         }
         
         [Test]
@@ -82,34 +80,33 @@ namespace MeshOptimizerTests
         {
             var vertices = new ComplexVertex[12]
             {
-                new ComplexVertex(1, 0, 0, 1, 0, 0),
-                new ComplexVertex(0, 1, 0, 0, 1, 0),
-                new ComplexVertex(0, 0, 1, 0, 0, 1),
-                new ComplexVertex(0, 0, 1, 0, 0, 1),
-                new ComplexVertex(0, 1, 0, 0, 1, 0),
-                new ComplexVertex(1, 0, 0, 1, 0, 0),
-                new ComplexVertex(1, 0, 0, 1, 0, 0),
-                new ComplexVertex(0, 1, 0, 0, 1, 0),
-                new ComplexVertex(0, 0, 1, 0, 0, 1),
-                new ComplexVertex(0, 0, 1, 0, 0, 1),
-                new ComplexVertex(0, 1, 0, 0, 1, 0),
-                new ComplexVertex(1, 0, 0, 1, 0 ,0)
+                new ComplexVertex(1, 0, 0, 1, 0),
+                new ComplexVertex(0, 1, 0, 0, 1),
+                new ComplexVertex(0, 0, 1, 0, 0),
+                new ComplexVertex(0, 0, 1, 0, 0),
+                new ComplexVertex(0, 1, 0, 0, 1),
+                new ComplexVertex(1, 0, 0, 1, 0),
+                new ComplexVertex(1, 0, 0, 1, 0),
+                new ComplexVertex(0, 1, 0, 0, 1),
+                new ComplexVertex(0, 0, 1, 0, 0),
+                new ComplexVertex(0, 0, 1, 0, 0),
+                new ComplexVertex(0, 1, 0, 0, 1),
+                new ComplexVertex(1, 0, 0, 1, 0)
             };
-            var mesh = new Mesh<ComplexVertex>(vertices, null, ComplexVertex.SizeInBytes, ComplexVertex.SizeInBytes);
-            MeshOperations.Optimize(mesh);
+            var result = MeshOperations.Optimize(vertices, null, ComplexVertex.SizeInBytes);
             Assert.AreEqual(new ComplexVertex[3]
             {
-                new ComplexVertex(1, 0, 0, 1, 0, 0),
-                new ComplexVertex(0, 1, 0, 0, 1, 0),
-                new ComplexVertex(0, 0, 1, 0, 0, 1),
-            }, mesh.Vertices);
+                new ComplexVertex(1, 0, 0, 1, 0),
+                new ComplexVertex(0, 1, 0, 0, 1),
+                new ComplexVertex(0, 0, 1, 0, 0),
+            }, result.Item1);
             Assert.AreEqual(new uint[12]
             {
                 0,1,2,
                 2,1,0,
                 0,1,2,
                 2,1,0
-            }, mesh.Indices);
+            }, result.Item2);
         }
 
         struct ComplexVertex
@@ -122,7 +119,7 @@ namespace MeshOptimizerTests
             public int I { get; }
             public int J { get; }
 
-            public ComplexVertex(float X, float Y, float Z, int I, int J, int K)
+            public ComplexVertex(float X, float Y, float Z, int I, int J)
             {
                 this.X = X;
                 this.Y = Y;

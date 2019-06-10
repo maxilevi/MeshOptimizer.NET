@@ -3,22 +3,42 @@ using System.Collections.Generic;
 
 namespace MeshOptimizer
 {
+    /// <summary>
+    /// A collection of common meshoptimizer operations
+    /// </summary>
     public static class MeshOperations
     {
-        public static void Optimize<T>(Mesh<T> Target)
+
+        /// <summary>
+        /// Executes the "standard" optimizations that are suggested in the meshoptimizer README
+        /// See (https://github.com/zeux/meshoptimizer#pipeline)
+        /// </summary>
+        /// <param name="Vertices">The vertices of the mesh</param>
+        /// <param name="Indices">The indices of the mesh</param>
+        /// <param name="VertexSize">The size of T in bytes</param>
+        /// <typeparam name="T">The vertex type</typeparam>
+        /// <returns>A tuple with the new vertices and indices</returns>
+        public static Tuple<T[], uint[]> Optimize<T>(T[] Vertices, uint[] Indices, uint VertexSize)
         {
-            var results = Index(Target.Vertices, Target.Indices, Target.VertexSize);
+            var results = Reindex(Vertices, Indices, VertexSize);
             var vertices = results.Item1;
             var indices = results.Item2;
 
-            //OptimizeCache(indices, vertices.Length);
-            //OptimizeOverdraw(indices, vertices, Target.Stride, 1.05f);
-            //OptimizeVertexFetch(indices, vertices, Target.VertexSize);
-            Target.Vertices = vertices;
-            Target.Indices = indices;
+            OptimizeCache(indices, vertices.Length);
+            OptimizeOverdraw(indices, vertices, VertexSize, 1.05f);
+            OptimizeVertexFetch(indices, vertices, VertexSize);
+            return Tuple.Create(vertices, indices);
         }
 
-        public static Tuple<T[], uint[]> Index<T>(T[] Vertices, uint[] Indices, uint VertexSize)
+        /// <summary>
+        /// Reindex the given mesh. See (https://github.com/zeux/meshoptimizer#indexing)
+        /// </summary>
+        /// <param name="Vertices">The vertices of the mesh</param>
+        /// <param name="Indices">The indices of the mesh</param>
+        /// <param name="VertexSize">The size of T in bytes</param>
+        /// <typeparam name="T">The vertex type</typeparam>
+        /// <returns>A tuple with the new vertices and indices</returns>
+        public static Tuple<T[], uint[]> Reindex<T>(T[] Vertices, uint[] Indices, uint VertexSize)
         {
             var remap = new uint[Vertices.Length];
             var vertexPointer = Pointer.Create(Vertices);
@@ -44,11 +64,24 @@ namespace MeshOptimizer
             return Tuple.Create(vertices, indices);
         }
         
+        /// <summary>
+        /// Optimizes the mesh for the GPU cache. See (https://github.com/zeux/meshoptimizer#vertex-cache-optimization)
+        /// </summary>
+        /// <param name="Indices">The indices of the mesh</param>
+        /// <param name="VertexCount">Total amount of vertices the mesh has</param>
         public static void OptimizeCache(uint[] Indices, int VertexCount)
         {
             MeshOptimizerNative.OptimizeVertexCache(Indices, Indices, (UIntPtr) Indices.Length, (UIntPtr) VertexCount);
         }
         
+        /// <summary>
+        /// Optimizes the mesh to reduce overdraw. See (https://github.com/zeux/meshoptimizer#vertex-cache-optimization)
+        /// </summary>
+        /// <param name="Indices">The indices of the mesh</param>
+        /// <param name="Vertices">The vertices of the mesh</param>
+        /// <param name="Stride">Space (in bytes) between each vertex</param>
+        /// <param name="Threshold">The optimization threshold</param>
+        /// <typeparam name="T"></typeparam>
         public static void OptimizeOverdraw<T>(uint[] Indices, T[] Vertices, uint Stride, float Threshold)
         {
             var pointer = Pointer.Create(Vertices);
@@ -56,6 +89,13 @@ namespace MeshOptimizer
             pointer.Free();
         }
         
+        /// <summary>
+        /// Optimizes vertex fetching. See (https://github.com/zeux/meshoptimizer#vertex-cache-optimization)
+        /// </summary>
+        /// <param name="Indices">The indices of the mesh</param>
+        /// <param name="Vertices">The vertices of the mesh</param>
+        /// <param name="VertexSize">The size of T in bytes</param>
+        /// <typeparam name="T">The vertex type</typeparam>
         public static void OptimizeVertexFetch<T>(uint[] Indices, T[] Vertices, uint VertexSize)
         {
             var pointer = Pointer.Create(Vertices);
